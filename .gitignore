@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+data/raw/
+data/processed/
+models/*.pth
+models/*.pt
+.ipynb_checkpoints/
+.env
+wandb/

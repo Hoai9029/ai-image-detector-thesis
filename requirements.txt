@@ -1,0 +1,14 @@
+torch
+torchvision
+timm
+albumentations
+matplotlib
+pandas
+numpy
+scikit-learn
+jupyter
+kaggle
+wandb
+pillow
+fastapi
+uvicorn
