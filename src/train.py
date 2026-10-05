@@ -25,7 +25,7 @@ def parse_args():
     p.add_argument("--model", default="efficientnet_b0")
     p.add_argument("--epochs", type=int, default=5)
     p.add_argument("--batch_size", type=int, default=128)
-    p.add_argument("--lr", type=float, default=3e-4)
+    p.add_argument("--lr", type=float, default=1e-3)
     p.add_argument("--weight_decay", type=float, default=1e-4)
 
     p.add_argument(
