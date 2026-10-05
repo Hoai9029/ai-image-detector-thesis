@@ -143,3 +143,38 @@ trên subset 2.000 ảnh.
 
 Mô hình có/không có khả năng học trên tập nhỏ. Pipeline Dataset, DataLoader,
 loss, optimizer, AMP và GPU được kiểm tra thông qua các thử nghiệm sanity check.
+
+## W2D4 — Debug và chọn Learning Rate
+
+### Kiểm tra nhãn
+
+- REAL: 50.000 ảnh
+- FAKE: 50.000 ảnh
+- REAL được gán label 0
+- FAKE được gán label 1
+
+### So sánh Learning Rate
+
+| Learning Rate | Val Loss | Val Acc | Val AUC | Time/Epoch |
+|---|---:|---:|---:|---:|
+| 1e-3 | 0.1848 | 94.45% | 98.49% | 28.5 s |
+| 3e-4 | 0.3129 | 93.05% | 97.91% | 28.8 s |
+| 1e-4 | 0.4554 | 90.25% | 95.96% | 29.4 s |
+
+### Lựa chọn Learning Rate
+
+Learning rate `1e-3` được chọn làm cấu hình mặc định cho baseline
+vì đạt kết quả validation tốt nhất trong thử nghiệm:
+
+- Val Loss: 0.1848
+- Val Accuracy: 94.45%
+- Val AUC: 98.49%
+
+Đồng thời, thời gian huấn luyện cũng tương đương với các learning rate
+còn lại, khoảng 28.5 giây/epoch.
+
+### Tốc độ
+
+Với subset 10.000 ảnh, thời gian trung bình khoảng 28–29 giây/epoch
+trên GPU Tesla T4. Do tốc độ hiện tại khá tốt nên chưa cần thay đổi
+chiến lược preprocessing.
