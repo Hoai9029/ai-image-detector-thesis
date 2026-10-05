@@ -110,3 +110,36 @@ Một số kiến trúc thường được sử dụng trong bài toán AI-gener
 
 Lưu ý:
 Accuracy giữa các nghiên cứu không nên so sánh trực tiếp nếu dataset, cách chia dữ liệu và điều kiện test khác nhau.
+
+## W2D1 — EfficientNet-B0
+
+- Model: EfficientNet-B0
+- Framework: PyTorch + timm
+- Pretrained: ImageNet
+- Input: 3 × 224 × 224
+- Output: 1 logit
+- Parameters: [điền kết quả thực tế] M
+
+### Lý do chọn
+
+EfficientNet-B0 được chọn làm mô hình baseline vì có kiến trúc tương đối nhẹ,
+số lượng tham số không quá lớn và tốc độ huấn luyện/inference phù hợp với
+điều kiện tài nguyên của đề tài. Mô hình pretrained trên ImageNet được sử dụng
+theo hướng transfer learning, sau đó thay lớp phân loại cuối bằng một đầu ra
+phục vụ bài toán phân loại REAL/FAKE.
+
+## W2D3 — Sanity Check
+
+Mục tiêu của sanity check là kiểm tra pipeline training trước khi chạy toàn bộ
+dataset. Hai thử nghiệm được thực hiện: overfit trên tập rất nhỏ và training
+trên subset 2.000 ảnh.
+
+| Thử nghiệm | Cấu hình | Train Acc | Val Acc | Time/Epoch | Nhận xét |
+|---|---|---:|---:|---:|---|
+| A - Overfit | 256 ảnh, 15 epochs, batch 32, lr 3e-4 | 1.0 | 0.905 | 1.3 s | ... |
+| B - Debug | 2000 ảnh, 3 epochs, batch 64, lr 3e-4 | 0.98| 0.93 | 6.7 s | ... |
+
+### Kết luận
+
+Mô hình có/không có khả năng học trên tập nhỏ. Pipeline Dataset, DataLoader,
+loss, optimizer, AMP và GPU được kiểm tra thông qua các thử nghiệm sanity check.
