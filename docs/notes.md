@@ -178,3 +178,41 @@ còn lại, khoảng 28.5 giây/epoch.
 Với subset 10.000 ảnh, thời gian trung bình khoảng 28–29 giây/epoch
 trên GPU Tesla T4. Do tốc độ hiện tại khá tốt nên chưa cần thay đổi
 chiến lược preprocessing.
+
+## W2D7 — Tổng kết baseline
+
+### Baseline chính thức
+
+- Model: EfficientNet-B0
+- Dataset: CIFAKE
+- Input: 3 × 224 × 224
+- Pretrained: ImageNet
+- Epochs: 5
+- Batch size: 128
+- Learning rate: 1e-3
+- Optimizer: AdamW
+- Weight decay: 1e-4
+- Scheduler: CosineAnnealingLR
+- AMP: Có
+- Seed: 42
+- Device: NVIDIA Tesla T4
+
+### Kết quả trên tập test
+
+| Chỉ số | Kết quả |
+|---|---:|
+| Accuracy | 98.25% |
+| Precision (FAKE) | 97.92% |
+| Recall (FAKE) | 98.59% |
+| F1 (FAKE) | 98.26% |
+| AUC | 99.86% |
+| False Positive Rate | 2.09% |
+| False Negative Rate | 1.41% |
+
+### Confusion Matrix
+
+```text
+                 Predicted
+                 REAL    FAKE
+Actual REAL      9791     209
+Actual FAKE       141    9859
