@@ -12,6 +12,7 @@ from src.engine import evaluate, train_one_epoch
 from src.model import build_model
 from src.transforms import test_transform, train_transform
 from src.utils import get_device, set_seed
+from src.augment import RobustAugment
 
 
 def parse_args():
@@ -33,6 +34,12 @@ def parse_args():
         type=int,
         default=0,
         help="0 = dùng toàn bộ train; N = chỉ dùng N ảnh để chạy thử"
+    )
+
+    p.add_argument(
+        "--aug",
+        choices=["none", "both"],
+        default="none"
     )
 
     p.add_argument("--num_workers", type=int, default=4)
@@ -59,9 +66,19 @@ def main():
 
     train_dir = os.path.join(args.data_root, "train")
 
+    if args.aug == "both":
+        robust_aug = RobustAugment()
+
+        def train_transform_with_aug(img):
+            img = robust_aug(img)
+            return train_transform(img)
+
+    else:
+        train_transform_with_aug = train_transform
+
     ds_train = CIFAKEDataset(
         train_dir,
-        transform=train_transform
+        transform=train_transform_with_aug
     )
 
     ds_val = CIFAKEDataset(
