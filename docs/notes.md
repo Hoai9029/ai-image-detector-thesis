@@ -216,3 +216,44 @@ chiến lược preprocessing.
                  REAL    FAKE
 Actual REAL      9791     209
 Actual FAKE       141    9859
+
+## W3D1 — Degradation và quan sát tác động
+
+### Định dạng dữ liệu
+
+Ảnh CIFAKE có định dạng JPEG (`.jpg`) và kích thước gốc là `32 × 32` pixel.
+
+Do ảnh gốc đã là JPEG, phép nén JPEG trong thí nghiệm có thể được xem là quá trình nén lại ảnh. Điều này vẫn phù hợp với mục tiêu mô phỏng ảnh đã được xử lý hoặc nén thêm khi chia sẻ trên Internet.
+
+### Các phép suy giảm
+
+Hai phép suy giảm được xây dựng trong `src/degrade.py`:
+
+* JPEG compression với các mức quality: 90, 70, 50, 30 và 10.
+* Resize down-up với scale 0.75× và 0.5×.
+
+Cùng một hàm suy giảm sẽ được sử dụng cho cả augmentation khi huấn luyện và đánh giá robustness để đảm bảo điều kiện thí nghiệm nhất quán.
+
+### Đo mức thay đổi bằng MAE
+
+| Điều kiện    |   MAE |
+| ------------ | ----: |
+| JPEG q=90    |  1.52 |
+| JPEG q=70    |  2.32 |
+| JPEG q=50    |  7.57 |
+| JPEG q=30    |  8.69 |
+| JPEG q=10    | 13.66 |
+| Resize 0.75× |  9.05 |
+| Resize 0.5×  | 13.81 |
+
+Kết quả cho thấy mức độ thay đổi của ảnh tăng khi chất lượng JPEG giảm. JPEG q=90 có MAE chỉ 1.52, trong khi JPEG q=10 có MAE 13.66.
+
+Tương tự, resize xuống 0.5× rồi phóng lại tạo ra mức thay đổi lớn hơn resize 0.75×, với MAE lần lượt là 13.81 và 9.05.
+
+Do CIFAKE chỉ có ảnh kích thước 32 × 32 pixel, các phép resize và nén có thể gây ảnh hưởng tương đối mạnh đến nội dung ảnh. Đây là một hạn chế cần lưu ý khi đánh giá khả năng robustness trên CIFAKE.
+
+### Nhận xét
+
+Các kết quả quan sát và MAE cho thấy JPEG compression và resize down-up thực sự làm thay đổi dữ liệu đầu vào. Những thay đổi này có thể làm mất hoặc biến dạng các đặc trưng hình ảnh mà mô hình sử dụng để phân biệt REAL và FAKE.
+
+Vì vậy, Tuần 3 sẽ thử nghiệm augmentation với các phép suy giảm này trong quá trình huấn luyện, sau đó đánh giá xem mô hình có giữ được độ chính xác tốt hơn khi ảnh bị nén hoặc thu nhỏ hay không.
