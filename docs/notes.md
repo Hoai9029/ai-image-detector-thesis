@@ -257,3 +257,22 @@ Do CIFAKE chỉ có ảnh kích thước 32 × 32 pixel, các phép resize và n
 Các kết quả quan sát và MAE cho thấy JPEG compression và resize down-up thực sự làm thay đổi dữ liệu đầu vào. Những thay đổi này có thể làm mất hoặc biến dạng các đặc trưng hình ảnh mà mô hình sử dụng để phân biệt REAL và FAKE.
 
 Vì vậy, Tuần 3 sẽ thử nghiệm augmentation với các phép suy giảm này trong quá trình huấn luyện, sau đó đánh giá xem mô hình có giữ được độ chính xác tốt hơn khi ảnh bị nén hoặc thu nhỏ hay không.
+
+
+## W3D2 — Robust Augmentation
+
+Đã xây dựng `RobustAugment` trong `src/augment.py` để mô phỏng các thay đổi thường gặp khi ảnh được chia sẻ trên Internet.
+
+Augmentation gồm hai phép biến đổi:
+
+* JPEG compression với quality được lấy ngẫu nhiên trong khoảng 30–70.
+* Resize down-up với scale ngẫu nhiên trong khoảng 0.5–0.75.
+
+Xác suất mặc định của mỗi phép biến đổi là 0.5. Hai phép biến đổi có thể được áp dụng độc lập, vì vậy một ảnh có thể không bị biến đổi, bị áp dụng một phép hoặc được áp dụng cả hai phép.
+
+Các phép biến đổi sử dụng lại hai hàm trong `src/degrade.py` để đảm bảo quá trình augmentation và quá trình đánh giá robustness sử dụng cùng cách xử lý ảnh.
+
+Sau augmentation, kích thước ảnh vẫn được giữ nguyên ở mức `32 × 32`. Việc resize lên `224 × 224` tiếp tục được thực hiện bởi pipeline transform hiện tại.
+
+Mục đích của augmentation là giúp mô hình học các đặc trưng ít phụ thuộc hơn vào chất lượng ảnh và tăng khả năng nhận diện ảnh AI khi ảnh đã trải qua quá trình nén hoặc thay đổi kích thước.
+
