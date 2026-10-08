@@ -1,0 +1,13 @@
+{
+  "data_root": "/kaggle/input/datasets/birdy654/cifake-real-and-ai-generated-synthetic-images",
+  "model": "efficientnet_b0",
+  "epochs": 5,
+  "batch_size": 128,
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "subset": 0,
+  "aug": "none",
+  "num_workers": 4,
+  "seed": 42,
+  "out_dir": "/kaggle/working/run_w3_baseline"
+}
