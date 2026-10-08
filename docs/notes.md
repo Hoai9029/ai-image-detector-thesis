@@ -276,3 +276,67 @@ Sau augmentation, kích thước ảnh vẫn được giữ nguyên ở mức `3
 
 Mục đích của augmentation là giúp mô hình học các đặc trưng ít phụ thuộc hơn vào chất lượng ảnh và tăng khả năng nhận diện ảnh AI khi ảnh đã trải qua quá trình nén hoặc thay đổi kích thước.
 
+
+W3 - Huấn luyện tính bền vững (Robustness Training)
+
+
+W3D1 - Triển khai các điều kiện suy giảm chất lượng ảnh
+
+Đã triển khai:
+• Nén ảnh JPEG
+• Thay đổi kích thước (Phóng to/Thu nhỏ)
+Điều khiển mức độ suy giảm:
+• Chất lượng JPEG (JPEG quality): 90, 70, 50, 30, 10
+• Tỷ lệ thay đổi kích thước (Resize scale): 0.75, 0.50
+
+W3D2 - Tăng cường dữ liệu giúp tăng tính bền vững (Robust Augmentation)
+
+Đã triển khai phương thức RobustAugment.
+Tăng cường dữ liệu khi huấn luyện:
+• Nén JPEG với xác suất 0.5
+• Thay đổi kích thước với xác suất 0.5
+• Chất lượng JPEG được lấy mẫu ngẫu nhiên từ khoảng [30, 70]
+• Tỷ lệ kích thước được lấy mẫu ngẫu nhiên từ khoảng [0.5, 0.75]
+Lưu ý: Tập kiểm định (Validation) không áp dụng tăng cường dữ liệu.
+
+W3D3 - Tích hợp quy trình huấn luyện
+
+Đã thêm các tham số:
+• --aug none (Không tăng cường - Baseline)
+• --aug both (Tăng cường cả hai phương thức - Robust)
+Cấu hình chung của mô hình Baseline và Robust:
+• Kiến trúc mạng: EfficientNet-B0
+• Seed: 42
+• Số epoch: 5
+• Batch size: 128
+• Tốc độ học (Learning rate): 1e-3
+• Hệ số suy giảm trọng số (Weight decay): 1e-4
+Điểm khác biệt duy nhất giữa hai mô hình nằm ở thiết lập tăng cường dữ liệu bền vững.
+
+W3D4-W3D6 - Đánh giá tính bền vững
+
+Tập kiểm định được cố định bằng seed 42.
+Các điều kiện đánh giá bao gồm:
+• Clean (Ảnh gốc sạch)
+• JPEG q=90
+• JPEG q=70
+• JPEG q=50
+• JPEG q=30
+• JPEG q=10
+• Resize 0.75x
+• Resize 0.50x
+Kết quả được lưu tại tệp: robust_val_results.json
+
+Bảng kết quả đánh giá tính bền vững (Robustness Evaluation Results)
+
+Dưới đây là bảng số liệu chi tiết được trích xuất từ biểu đồ kết quả:
+Điều kiện suy giảm (Degradation Condition)	Độ chính xác Baseline (Màu xanh)	Độ chính xác Robust (Màu cam)
+clean (Ảnh gốc sạch)	~0.98	~0.98
+jpeg_q90 (Chất lượng JPEG 90)	~0.98	~0.98
+jpeg_q70 (Chất lượng JPEG 70)	~0.98	~0.98
+jpeg_q50 (Chất lượng JPEG 50)	~0.96	~0.98
+jpeg_q30 (Chất lượng JPEG 30)	~0.93	~0.97
+jpeg_q10 (Chất lượng JPEG 10)	~0.82	~0.86
+resize_075 (Thu nhỏ còn 0.75x)	~0.60	~0.98
+resize_050 (Thu nhỏ còn 0.50x)	~0.63	~0.97
+
